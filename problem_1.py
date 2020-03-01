@@ -1,41 +1,94 @@
-class LRU_Cache(object):
 
-    def __init__(self, capacity=5):
-        # Initialize class variables
+class Node:
+    def __init__(self, key, value):
+        self.key = key
+        self.value = value
+        self.next = None
+        self.previous = None
+
+class LRU_Cache(object):
+    def __init__(self, capacity):
+        self.head = None
+        self.tail = None
         self.capacity = capacity
-        self.items = {}
-        self.list = []
-        pass
+        self.position = {}
+
+    def set(self, key, value):
+        if self.capacity <= 0:
+            return
+        if self.head is None:
+            new_node = Node(key, value)
+            self.head = new_node
+            self.tail = self.head
+            self.position[key] = new_node
+        else:
+            if key not in self.position:
+                new_node = Node(key, value)
+                if len(self.position) < self.capacity:
+                    new_node.previous = self.tail
+                    new_node.previous.next = new_node
+                    self.tail = new_node
+                    self.position[key] = new_node
+                else:
+                    old_node = self.head
+                    self.head = self.head.next
+                    self.head.previous = None
+                    del self.position[old_node.value]
+                    new_node.previous = self.tail
+                    new_node.previous.next = new_node
+                    self.tail = new_node
+                    self.position[key] = new_node
+            else:
+                old_node = self.position[key]
+                old_node.value = value
+                if old_node is self.head:
+                    self.head = self.head.next
+                    self.head.previous = None
+                    old_node.previous = self.tail
+                    old_node.previous.next = old_node
+                    old_node.next = Node
+                elif old_node is self.tail:
+                    return
+                else:
+                    pre = old_node.previous
+                    next = old_node.next
+                    pre.next = next
+                    next.previous = pre
+                    old_node.previous = self.tail
+                    old_node.previous.next = old_node
+                    old_node.next = None
+                    self.tail = old_node
+
 
     def get(self, key):
-        # Retrieve item from provided key. Return -1 if nonexistent.
-        if key in self.items:
-            self.list.remove(key)
-            self.list.append(key)
-            return self.items[key]
+
+        if key in self.position:
+            old_node = self.position[key]
+            if old_node is self.head:
+                self.head = self.head.next
+                self.head.previous = None
+                old_node.previous = self.tail
+                old_node.previous.next = old_node
+                old_node.next = None
+                self.tail = old_node
+            elif old_node is self.tail:
+                return old_node.value
+            else:
+                pre = old_node.previous
+                next = old_node.next
+                pre.next = next
+                next.previous = pre
+                old_node.previous = self.tail
+                old_node.previous.next = old_node
+                old_node.next = None
+                self.tail = old_node
+            return old_node.value
         else:
             return -1
 
 
-    def set(self, key, value):
-        # Set the value if the key is not present in the cache. If the cache is at capacity remove the oldest item.
-        if key in self.items:
-            self.items[key] = value
-            self.list.remove(key)
-            self.list.append(key)
-        else:
-            if len(self.list) < self.capacity:
-                self.items[key] = value
-                self.list.append(key)
-            else:
-                self.items.pop(self.list[0])
-                self.list.pop(0)
-                self.items[key] = value
-                self.list.append(key)
-        print(self.list)
 
-
-
+# Test case 1
 our_cache = LRU_Cache(5)
 
 our_cache.set(1, 1);
@@ -66,3 +119,33 @@ our_cache.set(2,2)
 print(our_cache.get(3))
 
 
+# Test case 2
+print(f'This is the second test case')
+our_cache1 = LRU_Cache(0)
+our_cache1.set(1, 1);
+our_cache1.set(2, 2);
+our_cache1.set(3, 3);
+our_cache1.set(4, 4);
+
+
+print(our_cache1.get(1))      # returns 1
+print(our_cache1.get(2))       # returns 2
+print(our_cache1.get(9))      # returns -1 because 9 is not present in the cache
+
+# Test case 3
+print(f'This is the third test case')
+our_cache2 = LRU_Cache(5)
+our_cache2.set(1, 1);
+our_cache2.set(2, 2);
+our_cache2.set(3, 3);
+our_cache2.set(4, 4);
+
+
+print(our_cache2.get(1))      # returns 1
+print(our_cache2.get(2))       # returns 2
+
+our_cache2.set(1, 11);
+our_cache2.set(2, 22);
+
+print(our_cache2.get(1))      # returns 11
+print(our_cache2.get(2))       # returns 22
