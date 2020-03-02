@@ -84,3 +84,7 @@ print(list0) # expect to see blank block list
 list1 = BlockChain()
 list1.append(1)
 print(list1) # expect to see block 1
+
+list2 = BlockChain()
+list2.append()
+print(list2)
