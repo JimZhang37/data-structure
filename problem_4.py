@@ -39,6 +39,13 @@ def is_user_in_group(user, group):
       user(str): user name/id
       group(class:Group): group to check user membership against
     """
+    if user == "":
+        print("no user to look for")
+        return False
+
+    if not isinstance(group, Group):
+        print(f'{group} is not a member of Group class')
+        return False
 
     users = group.get_users()
     for i in users:
@@ -56,3 +63,8 @@ print(is_user_in_group("sub", child))# expect False
 print(is_user_in_group(sub_child_user, child))# expect True
 print(is_user_in_group("sub", sub_child))# expect False
 print(is_user_in_group(sub_child_user, sub_child))# expect True
+
+#edge case 1
+print(is_user_in_group("", sub_child))# expect False
+group1 = "group1"
+print(is_user_in_group(sub_child_user, group1))# expect False
