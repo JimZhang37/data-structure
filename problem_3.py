@@ -63,7 +63,7 @@ class Node:
 
 
 class Tree:
-    def __init__(self, node):
+    def __init__(self, node=None):
         self.root = node
 
     def get_root_value(self):
@@ -75,6 +75,12 @@ class Tree:
         new_node.left = self.root
         new_node.right = tree.root
         self.root = new_node
+
+    def promote_single_node_tree(self):
+        if (self.root.left is None) and (self.root.right is None):
+            new = Node(self.root.value)
+            new.left = self.root
+            self.root = new
 
     def __repr__(self):
         level = 0
@@ -112,6 +118,10 @@ class Tree:
 
 def huffman_encoding(data):
     # forest is a array of tree objects
+    if data == "":
+        print("no data to encode")
+        return None, None
+
     forest = []
     q = PriorityQueue()
     ch_set = set(data)
@@ -122,17 +132,23 @@ def huffman_encoding(data):
         forest.append(t)
         index = len(forest) - 1
         q.put((c, index))
-    while q.qsize() > 1:
-        a = q.get()
-        b = q.get()
-        tree1 = forest[a[1]]
-        tree2 = forest[b[1]]
-        tree1.join_tree(tree2)
-        forest.append(tree1)
-        index = len(forest) - 1
-        q.put((a[0] + b[0], index))
 
-    tree = forest[q.get()[1]]
+    tree = None
+    if q.qsize() == 1:
+        tree = forest[q.get()[1]]
+        tree.promote_single_node_tree()
+    else:
+        while q.qsize() > 1:
+            a = q.get()
+            b = q.get()
+            tree1 = forest[a[1]]
+            tree2 = forest[b[1]]
+            tree1.join_tree(tree2)
+            forest.append(tree1)
+            index = len(forest) - 1
+            q.put((a[0] + b[0], index))
+
+        tree = forest[q.get()[1]]
 
     dict = build_dictionary(tree)
 
@@ -199,23 +215,27 @@ if __name__ == "__main__":
     print ("The content of the encoded data is: {}\n".format(decoded_data))
 
     print("text 2")
-    a_great_sentence = "thank god is friday"
+    a_great_sentence = ""
 
     print ("The size of the data is: {}\n".format(sys.getsizeof(a_great_sentence)))
     print ("The content of the data is: {}\n".format(a_great_sentence))
 
-    encoded_data, tree = huffman_encoding(a_great_sentence)
+    encoded_data2, tree2 = huffman_encoding(a_great_sentence)
+    if (encoded_data2 is not None) and (tree2 is not None):
+        print ("The size of the encoded data is: {}\n".format(sys.getsizeof(int(encoded_data, base=2))))
+        print ("The content of the encoded data is: {}\n".format(encoded_data))
 
-    print ("The size of the encoded data is: {}\n".format(sys.getsizeof(int(encoded_data, base=2))))
-    print ("The content of the encoded data is: {}\n".format(encoded_data))
+    if (encoded_data2 is not None) and (tree2 is not None):
+        decoded_data = huffman_decoding(encoded_data, tree)
+        print("The size of the decoded data is: {}\n".format(sys.getsizeof(decoded_data)))
+        print("The content of the encoded data is: {}\n".format(decoded_data))
+    else:
+        print("no data to decode")
 
-    decoded_data = huffman_decoding(encoded_data, tree)
 
-    print ("The size of the decoded data is: {}\n".format(sys.getsizeof(decoded_data)))
-    print ("The content of the encoded data is: {}\n".format(decoded_data))
 
     print("text 3")
-    a_great_sentence = "Let's have more fun. It's a good coding practice. Why don't you try it again? "
+    a_great_sentence = "AAAAAAAAAAAA"
 
     print ("The size of the data is: {}\n".format(sys.getsizeof(a_great_sentence)))
     print ("The content of the data is: {}\n".format(a_great_sentence))
