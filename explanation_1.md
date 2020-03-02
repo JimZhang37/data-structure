@@ -1,13 +1,20 @@
 # Why I choose this data structure
-I chose a python list as my queue to store the cache, but it's different from normal queue. When an item in the cache is recently used, it will be put in the tail again.
-python list has 2 functions, append() and pop(0), that can be used as enque() and deque(). 
-python list has 1 function, remove(key) and append(), that are used to move a item to the tail of the queue.
+I chose a double linked list and a dictionary to implement LRU.
+As the dictionary has O(1) time complexity to assess data and all its keys are unique, to read  items in the cache is fast.
 
-I also chose to use python set to store the data in cache. When the size of the set reaches 5, the limit of the cache, I will know I have to deque() before I can enque() another item.
-
+Since the size of the cache is limited, the double linked list is used to delete item in the head
+of the queue. There are one pointer to the head and another to the tail. So to add to the tail or
+to delete the head has a time complexity of O(1)
+When a item in the cache is hit, the operation is to remove the item in the queue and re-add it
+in the tail. To remove an item in the middle of the queue, the dictionary is used. The value of the
+dictionary is the node, which contains both pointers to previous and next node. 
+So to remove an item requires only O(n) time.
 # Time Complexity
-get(): O(n):
-Because I use list.remove(), the time complexity becomes O(n)
+get(): O(1):
 
-set(): O(n):
-I use list.remove(), which has a time complexity of O(n)
+set(): O(1):
+
+# Space Complexity
+O(1)
+The space used is constant as the size of the dictionary and queue don't change. They all 
+depends on the capacity parameter, not the input.

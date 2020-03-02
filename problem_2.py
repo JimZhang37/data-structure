@@ -16,8 +16,25 @@ def find_files(suffix, path):
     Returns:
        a list of paths
     """
-
     plist = []
+    if (suffix == "" ) and (path == ""):
+        print("suffix and path are empty.")
+        return plist
+    elif suffix == "" :
+        print("suffix is empty.")
+        return plist
+    elif path == "":
+        print("path is empty.")
+        return plist
+
+    if os.path.isfile(path):
+        if path.endswith(suffix):
+            plist.append(path)
+        return plist
+
+
+
+
     currentpath = os.listdir(path)
 
     for i in currentpath:
@@ -36,5 +53,13 @@ def find_files(suffix, path):
 
 print(find_files('.c', './testdir'))
 print(find_files('.h', './testdir'))
-print(find_files('.cpp', './testdir'))
+print(find_files('.cpp', './testdir'))#empty
 print(find_files('.gitkeep', './testdir'))
+
+
+print(find_files('.c', './testdir/t1.c')) #
+print(find_files('.c', './testdir/t1.h'))# empty
+
+print(find_files('', '')) # empty
+print(find_files('', './testdir/t1.h')) # empty
+print(find_files('.c', '')) # empty
