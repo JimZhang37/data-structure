@@ -50,16 +50,16 @@ def find_files(suffix, path):
             plist += currentlist
 
     return plist
+if __name__ == "__main__":
+    print(find_files('.c', './testdir'))
+    print(find_files('.h', './testdir'))
+    print(find_files('.cpp', './testdir'))#empty
+    print(find_files('.gitkeep', './testdir'))
 
-print(find_files('.c', './testdir'))
-print(find_files('.h', './testdir'))
-print(find_files('.cpp', './testdir'))#empty
-print(find_files('.gitkeep', './testdir'))
 
+    print(find_files('.c', './testdir/t1.c')) #
+    print(find_files('.c', './testdir/t1.h'))# empty
 
-print(find_files('.c', './testdir/t1.c')) #
-print(find_files('.c', './testdir/t1.h'))# empty
-
-print(find_files('', '')) # empty
-print(find_files('', './testdir/t1.h')) # empty
-print(find_files('.c', '')) # empty
+    print(find_files('', '')) # empty
+    print(find_files('', './testdir/t1.h')) # empty
+    print(find_files('.c', '')) # empty
